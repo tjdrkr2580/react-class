@@ -2,10 +2,9 @@ import { useState } from "react";
 
 function App() {
   const [value,setValue] = useState("Save Changes");
-  const changeValue = () => setValue("Revert Changes");
-    function Btn({text,changeValue}) {
+    function Btn({text}) {
       console.log({text});
-      return <button onClick={changeValue} style={{
+      return <button style={{
         backgroundColor: 'tomato',
         color: 'white',
         padding: "10px 20px",
@@ -15,8 +14,7 @@ function App() {
     }
   return (
     <>
-    <Btn text={value} changeValue={changeValue}/>
-    <Btn text="Continue"/>
+    <Btn text={value}/>
     </>
   );
 }
