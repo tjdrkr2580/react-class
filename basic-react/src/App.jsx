@@ -1,31 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [toDo, setToDo] = useState("");
-  const [toDos, setToDos] = useState([]);
-  const onChange = (event) => setToDo(event.target.value);
-  const onSubmit = (event) => {
-    event.preventDefault();
-    if(toDo === ''){
-      return;
-    }
-    setToDos((currentArray) => [toDo, ...currentArray]);
-    setToDo("");
-    console.log(toDos);
+
+  const [loading,setLoading] = useState(true);
+  const [movies,setMovies] = useState([]);
+
+  const getMovieApi = async () => {
+    const json = await (
+      await fetch(
+        `https://yts.mx/api/v2/list_movies.json?minimum_rating=8.8&sort_by=year`
+      )
+    ).json();
+    setMovies(json.data.movies);
+    setLoading(false);
   }
+    useEffect(() => {
+      getMovieApi();
+    },[]);
 
   return (
     <div>
-      <h1>My Daily To Dos {toDos.length}</h1>
-      <form onSubmit={onSubmit}>
-        <input type="text" onChange={onChange} value={toDo} />
-        <button>To Do!</button>
-      </form>
-      <ul>
-        {
-          toDos.map((item) => (<li>{item}</li>))
-        }
-      </ul>
+      <h1>Movie App</h1>
+      {
+        loading ? <h2>Loading ...</h2> : <div>
+          {movies.map((movie) => (
+            <div key={movie.id}>
+              <img src={movie.medium_cover_image} />
+              <h3>{movie.title}</h3>
+              <p>{movie.summary}</p>
+              <p>{movie.year},{movie.rating}</p>
+              <ul>
+                {movie.genres.map((g) => <li key={g}>{g}</li>)}
+              </ul>
+            </div>
+            ))}
+        </div>
+      }
     </div>
   );
 }
