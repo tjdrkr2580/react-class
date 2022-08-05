@@ -6,7 +6,7 @@ const Movie = ({id,mediumCoverImage,title,summary,year,rating,genres}) => {
 
     <div key={id}>
     <img src={mediumCoverImage} />
-    <Link to="/movie"><h3>{title}</h3></Link>
+    <Link to={`/movie/${id}`}><h3>{title}</h3></Link>
     <p>{summary}</p>
     <p>{year},{rating}</p>
     <ul>
