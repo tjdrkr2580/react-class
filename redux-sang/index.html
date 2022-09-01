@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div id="red"></div>
+    <div id="blue"></div>
+    <div id="green"></div>
     <script>
       function reducer(state, action) {
         console.log(state, action);
@@ -22,17 +25,47 @@
         }
         var newState;
         if(action.type === 'CHANGE_COLOR'){
-          newState = Object.assign({},state,{color : 'red'});
+          newState = Object.assign({},state, {color: action.color});
+        }
+        else if(action.type === 'CHANGE_COLOR2'){
+          newState = Object.assign({},state, {color: action.color});
         }
         return newState;
       }
       var store = Redux.createStore(reducer);
-      var state = store.getState();
-      document.querySelector("body").innerHTML = 
-      `<div class="container" style="background-color: ${state.color}">
-        <h1>안녕</h1>
-        <button type="button" onClick="store.dispatch({type: 'CHANGE_COLOR',color: 'orange'});">Fire</button>
-      </div>`;
+      function red(){
+        var state = store.getState();
+        document.getElementById("red").innerHTML = 
+        `<div class="container" style="background-color: ${state.color}">
+          <h1>안녕</h1>
+          <button type="button" onClick="store.dispatch({type: 'CHANGE_COLOR',color: 'red'});">Fire</button>
+        </div>`;
+        
+      }
+      store.subscribe(red);
+      red();
+      
+      function blue(){
+        var state = store.getState();
+        document.getElementById("blue").innerHTML = 
+        `<div class="container" style="background-color: ${state.color}">
+          <h1>안녕</h1>
+          <button type="button" onClick="store.dispatch({type: 'CHANGE_COLOR2',color: 'blue'});">Fire</button>
+        </div>`;
+      }
+      store.subscribe(blue);
+      blue();
+
+      function green(){
+        var state = store.getState();
+        document.getElementById("green").innerHTML = 
+        `<div class="container" style="background-color: ${state.color}">
+          <h1>안녕</h1>
+          <button type="button" onClick="store.dispatch({type: 'CHANGE_COLOR2',color: 'green'});">Fire</button>
+        </div>`;
+      }
+      store.subscribe(green);
+      green();
     </script>
   </body>
 </html>
