@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.0/redux.js"
+            integrity="sha512-8clKd0Zb9EeWqWE0gzlNxwWIjzYlYZ9cAsGcGM7gPsE+SKUxY6zZmLhrWqHMYQqbNCSwy21bn/TtA4zTQ+edag=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+    </head>
+    <body>
+        <div id="header"></div>
+        <div id="nav"></div>
+        <div id="control"></div>
+        <div id="article"></div>
+
+        <script>
+            const reducer = (state,action) => {
+                if(state === undefined) {
+                    return {
+                        contents : [
+                            {id: 1, title: 'HTML', desc: 'HTML IS ...'},
+                            {id: 2, title: 'CSS', desc: 'CSS IS ...'},
+                        ]
+                    }
+                }
+            }   
+            let store = Redux.createStore(reducer);
+            function header() {
+                document
+                    .getElementById("header")
+                    .innerHTML = `
+        <header>
+            <h1>WEB</h1>
+            Hello, Web!
+        </header>
+        `;
+            }
+            function nav() {
+                document
+                    .getElementById("nav")
+                    .innerHTML = `
+        <nav>
+            <ul>
+                <li><a href="/create">create</a></li>
+                <li><input type="button" value="Delete"></li>
+            </ul>
+          
+        </nav>
+        `;
+            }
+            function control() {
+                let state = store.getState();
+                let content = '';
+                console.log(state.content)
+                for(let i = 0 ; i < state.contents.length ; i++){
+                    console.log(state.contents);
+                    content = content + `<li>
+                        <a href="${state.contents[i].id}">${state.contents[i].title}</a>
+                    </li>`;
+                }
+                document
+                    .getElementById("control")
+                    .innerHTML = `
+        <ol>
+           ${content}
+        </ol>
+        `;
+            }
+            function article() {
+                document
+                    .getElementById("article")
+                    .innerHTML = `
+        <article>
+            <h2>HTML</h2>
+            HTML IS...
+        </article>
+        `;
+            }
+            header();
+            nav();
+            control();
+            article();
+        </script>
+    </body>
+</html>
