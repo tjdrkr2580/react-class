@@ -2,6 +2,7 @@ const redux = require("redux");
 const createStore = redux.createStore;
 
 //actions와 reducer를 통해서 store를 제어하는 것.
+//사용하기 쉽게 변수로.
 const ADD_SUBSCRIBER = "ADD_SUBSCRIBER";
 const ADD_VIEW = "ADD_VIEW";
 

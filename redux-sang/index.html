@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.2.0/redux.js"
+      integrity="sha512-8clKd0Zb9EeWqWE0gzlNxwWIjzYlYZ9cAsGcGM7gPsE+SKUxY6zZmLhrWqHMYQqbNCSwy21bn/TtA4zTQ+edag=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <script>
+      function reducer(state, action) {
+        console.log(state, action);
+        if (state === undefined) {
+          return { color: `yellow` };
+        }
+        var newState;
+        if(action.type === 'CHANGE_COLOR'){
+          newState = Object.assign({},state,{color : 'red'});
+        }
+        return newState;
+      }
+      var store = Redux.createStore(reducer);
+      var state = store.getState();
+      document.querySelector("body").innerHTML = 
+      `<div class="container" style="background-color: ${state.color}">
+        <h1>안녕</h1>
+        <button type="button" onClick="store.dispatch({type: 'CHANGE_COLOR',color: 'orange'});">Fire</button>
+      </div>`;
+    </script>
+  </body>
+</html>
