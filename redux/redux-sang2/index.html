@@ -33,8 +33,8 @@
                     .innerHTML = `
         <nav>
             <ul>
-                <li><a onclick="event.preventDefault();" href="/create">create</a></li>
-                <li><input type="button" value="Delete"></li>
+                <li><a onclick="event.preventDefault(); store.dispatch({type : 'CHANGE_MODE', mode : 'CREATE' });" href="/create">create</a></li>
+                <li><input type="button" onClick="store.dispatch({type : 'DELETE'});" value="Delete"></li>
             </ul>
           
         </nav>
@@ -97,13 +97,24 @@
             `;
 
                 }
+                else if(state.mode === 'WELCOME'){
+                    document
+                        .getElementById("article")
+                        .innerHTML = `
+            <article>
+                <h2>WELCOME</h2>
+                HELLO, REDUX !
+            </article>
+            `;
+
+                }
             }
 
             function reducer(state, action){
                 if(state === undefined){
                     return {
                         max_id: 2,
-                        mode : 'CREATE',
+                        mode : 'WELCOME',
                         selected_id:1,
                         contents:[
                             {id:1,title:'HTML',desc:'HTML is ..'},
@@ -113,15 +124,29 @@
                 }
                 var newState;
                 if(action.type === 'SELECT'){   
-                    newState = Object.assign({}, state, {selected_id:action.id});
+                    newState = Object.assign({}, state, {selected_id:action.id , mode : 'READ'});
                 }
                 else if(action.type === 'CREATE'){   
-                    var newMaxId = state.max.id + 1;
+                    var newMaxId = state.max_id + 1;
                     var newContents = state.contents.concat();
                     newContents.push({id: newMaxId ,title: action.title,desc: action.desc});
-                    newState =  Object.assign({},state,{max_id : newMaxId , contents : newContents , mode: 'read'});
-                }
-                console.log(action, state, newState);
+                    newState =  Object.assign({},state,{max_id : newMaxId , contents : newContents , mode: 'READ'});
+                } 
+                else if(action.type === 'DELETE'){   
+                    let newContents = [];
+                    for(let i = 0 ; i < state.contents.length ; i++) {
+                        if(state.selected_id !== state.contents[i].id) {
+                            newContents.push(
+                                state.contents[i]
+                            );
+                        }
+                    }
+                    newState = Object.assign({},state,{contents: newContents, mode: 'welcome'});
+                } 
+
+                else if(action.type === 'CHANGE_MODE'){   
+                    newState = Object.assign({},state, {mode : action.mode});
+                } 
                 return newState;
             }
             let store = Redux.createStore(reducer);
