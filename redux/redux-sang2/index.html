@@ -16,19 +16,7 @@
         <div id="nav"></div>
         <div id="control"></div>
         <div id="article"></div>
-
         <script>
-            const reducer = (state,action) => {
-                if(state === undefined) {
-                    return {
-                        contents : [
-                            {id: 1, title: 'HTML', desc: 'HTML IS ...'},
-                            {id: 2, title: 'CSS', desc: 'CSS IS ...'},
-                        ]
-                    }
-                }
-            }   
-            let store = Redux.createStore(reducer);
             function header() {
                 document
                     .getElementById("header")
@@ -45,7 +33,7 @@
                     .innerHTML = `
         <nav>
             <ul>
-                <li><a href="/create">create</a></li>
+                <li><a onclick="event.preventDefault();" href="/create">create</a></li>
                 <li><input type="button" value="Delete"></li>
             </ul>
           
@@ -54,12 +42,13 @@
             }
             function control() {
                 let state = store.getState();
-                let content = '';
-                console.log(state.content)
+                let content = '';   
                 for(let i = 0 ; i < state.contents.length ; i++){
-                    console.log(state.contents);
                     content = content + `<li>
-                        <a href="${state.contents[i].id}">${state.contents[i].title}</a>
+                        <a onClick="event.preventDefault();
+                        var action = {type : 'SELECT', id: ${state.contents[i].id}};
+                        store.dispatch(action);
+                        " href="${state.contents[i].id}">${state.contents[i].title}</a>
                     </li>`;
                 }
                 document
@@ -71,15 +60,73 @@
         `;
             }
             function article() {
-                document
+                var state = store.getState();
+                if(state.mode === 'CREATE') {
+                    document
                     .getElementById("article")
                     .innerHTML = `
-        <article>
-            <h2>HTML</h2>
-            HTML IS...
-        </article>
-        `;
+                        <form onsubmit="event.preventDefault();
+                        var title = this.title.value;
+                        var desc = this.desc.value;
+                        store.dispatch({type: 'CREATE',title: title, desc: desc});
+                        ">   
+                            <p><input type="text" name="title" placeholder="title"></p>
+                            <p><textarea name="desc" placeholder="description"/></textarea></p>
+                            <p><input type="submit" value="submit"></p>    
+                        </form>
+                        `;
+                }
+                else if(state.mode === 'READ'){
+                    var i = 0;
+                    var aTitle, aDesc;
+                    while(i < state.contents.length){
+                        if(state.contents[i].id === state.selected_id) {
+                            aTitle = state.contents[i].title;
+                            aDesc = state.contents[i].desc;
+                            break;
+                        }
+                        i = i + 1;
+                    }
+                    document
+                        .getElementById("article")
+                        .innerHTML = `
+            <article>
+                <h2>${aTitle}</h2>
+                ${aDesc}
+            </article>
+            `;
+
+                }
             }
+
+            function reducer(state, action){
+                if(state === undefined){
+                    return {
+                        max_id: 2,
+                        mode : 'CREATE',
+                        selected_id:1,
+                        contents:[
+                            {id:1,title:'HTML',desc:'HTML is ..'},
+                            {id:2,title:'CSS', desc:'CSS is ..'}
+                        ]
+                    }
+                }
+                var newState;
+                if(action.type === 'SELECT'){   
+                    newState = Object.assign({}, state, {selected_id:action.id});
+                }
+                else if(action.type === 'CREATE'){   
+                    var newMaxId = state.max.id + 1;
+                    var newContents = state.contents.concat();
+                    newContents.push({id: newMaxId ,title: action.title,desc: action.desc});
+                    newState =  Object.assign({},state,{max_id : newMaxId , contents : newContents , mode: 'read'});
+                }
+                console.log(action, state, newState);
+                return newState;
+            }
+            let store = Redux.createStore(reducer);
+            store.subscribe(article);
+            store.subscribe(control);
             header();
             nav();
             control();
