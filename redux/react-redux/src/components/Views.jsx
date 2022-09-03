@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addSubscribers } from "./../redux/subscribers/actions";
+import { addSubscribers } from "../redux/subscribers/actions";
 
 const Subscribers = ({ count, addSubscribers }) => {
   return (
